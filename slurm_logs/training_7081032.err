@@ -1,0 +1,53 @@
+/home/jgibson2/projects/UltraScanNet/venv/lib64/python3.12/site-packages/timm/models/registry.py:4: FutureWarning: Importing from timm.models.registry is deprecated, please import via timm.models
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.models", FutureWarning)
+/home/jgibson2/projects/UltraScanNet/venv/lib64/python3.12/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+WARNING: You've requested to log metrics to wandb but package not found. Metrics not being logged to wandb, try `pip install wandb`
+Training with a single process on 1 GPUs.
+WARNING: No pretrained configuration specified for mamba_vision_T2 model. Using a default. Please add a config to the model pretrained_cfg registry or pass explicitly.
+Traceback (most recent call last):
+  File "/home/jgibson2/projects/UltraScanNet/ultrascannet/train.py", line 1162, in <module>
+    main()
+  File "/home/jgibson2/projects/UltraScanNet/ultrascannet/train.py", line 464, in main
+    model = create_model(
+            ^^^^^^^^^^^^^
+  File "/home/jgibson2/projects/UltraScanNet/venv/lib64/python3.12/site-packages/timm/models/_factory.py", line 126, in create_model
+    model = create_fn(
+            ^^^^^^^^^^
+  File "/home/jgibson2/projects/UltraScanNet/ultrascannet/models/ultra_scan_net.py", line 1113, in ultra_scan_net
+    url = model.default_cfg['url']
+          ~~~~~~~~~~~~~~~~~^^^^^^^
+KeyError: 'url'
+E0412 19:04:05.825000 1682063 venv/lib/python3.12/site-packages/torch/distributed/elastic/multiprocessing/api.py:986] failed (exitcode: 1) local_rank: 0 (pid: 1682126) of binary: /home/jgibson2/projects/UltraScanNet/venv/bin/python
+Traceback (most recent call last):
+  File "/home/jgibson2/projects/UltraScanNet/venv/bin/torchrun", line 6, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/jgibson2/projects/UltraScanNet/venv/lib64/python3.12/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 362, in wrapper
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/jgibson2/projects/UltraScanNet/venv/lib64/python3.12/site-packages/torch/distributed/run.py", line 990, in main
+    run(args)
+  File "/home/jgibson2/projects/UltraScanNet/venv/lib64/python3.12/site-packages/torch/distributed/run.py", line 981, in run
+    elastic_launch(
+  File "/home/jgibson2/projects/UltraScanNet/venv/lib64/python3.12/site-packages/torch/distributed/launcher/api.py", line 170, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jgibson2/projects/UltraScanNet/venv/lib64/python3.12/site-packages/torch/distributed/launcher/api.py", line 317, in launch_agent
+    raise ChildFailedError(
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+ultrascannet/train.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2026-04-12_19:04:05
+  host      : babel-y9-16.ib
+  rank      : 0 (local_rank: 0)
+  exitcode  : 1 (pid: 1682126)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================

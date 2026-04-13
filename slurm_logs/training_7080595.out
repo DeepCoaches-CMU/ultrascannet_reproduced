@@ -1,0 +1,9 @@
+==== UltraScanNet Training ====
+Job started on babel-q5-24 at Sun Apr 12 17:29:30 EDT 2026
+SLURM_JOB_ID: 7080595
+Config      : /home/jgibson2/projects/UltraScanNet/ultrascannet/configs/experiments/mambavision_tiny2_1k_run_exp.yaml
+Model       : ultra_scan_net
+Experiment  : ultra_scan_net_BUSI
+Data dir    : /home/jgibson2/projects/UltraScanNet/datasets/BUSI_split
+Output dir  : /home/jgibson2/projects/UltraScanNet/weights
+WandB group : ultrascannet_reproduce

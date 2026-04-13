@@ -1,0 +1,109 @@
+ThreeAugment: false
+aa: null                           # Disable aggressive RandAugment
+activation_tracker: false
+amp: true
+ampere_sparsity: false
+aot_autograd: false
+apex_amp: false
+attn_drop_rate: 0.0
+aug_repeats: 0
+aug_splits: 0
+batch_size: 64                    # Lower batch size to reduce overfitting & suit small data
+bce_loss: false
+channels_last: true
+checkpoint_hist: 1
+class_map: ''
+clip_grad: 1.0                    # Stricter gradient clipping for stability
+clip_mode: norm
+color_jitter: 0.1                 # Mild color jitter (though BUSI is grayscale → possibly ignored)
+cooldown_epochs: 5
+crop_pct: 1.0
+cutmix: 0.0                       # Disable
+data_dir: /home/alexandra/Documents/Datasets/BUSI_split/
+data_len: 1260
+dataset: ''
+dataset_download: false
+decay_epochs: 50
+decay_milestones: [30, 40]
+decay_rate: 0.2
+dist_bn: reduce
+drop_path: 0.0
+drop_rate: 0.0
+epoch_repeats: 0.0
+epochs: 100                      # No need for 310 epochs
+eval_metric: top1
+experiment: busi_finetune
+fuser: ''
+gp: null
+grad_checkpointing: false
+hflip: 0.0                       # Disable flipping for medical imaging
+img_size: 224
+initial_checkpoint: ''
+input_size: [3, 224, 224]
+interpolation: bilinear
+jsd_loss: false
+layer_decay: null
+loadcheckpoint: ''
+local_rank: 0
+log_dir: ./log_dir/
+log_interval: 10
+log_wandb: false
+lr: 1e-4                         # Lower learning rate for fine-tuning
+lr_cycle_decay: 1.0
+lr_cycle_limit: 1
+lr_cycle_mul: 1.0
+lr_k_decay: 1.0
+lr_noise: null
+mesa: 0.0
+mesa_start_ratio: 0.25
+min_lr: 1e-6
+mixup: 0.0                       # Disable mixup for medical images
+model: ultra_scan_net
+model_ema: false
+model_ema_decay: 0.9995
+model_ema_force_cpu: false
+momentum: 0.9
+native_amp: false
+no_aug: false
+no_prefetcher: false
+no_resume_opt: false
+no_saver: false
+num_classes: 3                   # Must match BUSI (Normal, Benign, Malignant)
+opt: adamw                      # Use AdamW for smaller datasets
+opt_betas: [0.9, 0.999]
+opt_eps: 1e-8
+output: ./output_busi/
+patience_epochs: 10
+pin_mem: false
+pretrained: true
+ratio: [1.0, 1.0]
+recount: 1
+recovery_interval: 0
+remode: null
+reprob: 0.0                      # Dropout not helpful on small medical datasets
+resplit: false
+resume: ''
+save_images: false
+scale: [1.0, 1.0]               # Disable random resize scale
+sched: cosine
+seed: 31
+smoothing: 0.05                 # Light label smoothing
+split_bn: false
+start_epoch: null
+std: null
+sync_bn: false
+tag: busi_finetune_mamba
+torchscript: false
+train_interpolation: bilinear
+train_split: train
+tta: 0
+use_multi_epochs_loader: false
+val_split: validation
+validate_only: false
+validation_batch_size: 16
+vflip: 0.0                      # Disable for medical
+warmup_epochs: 5
+warmup_lr: 1e-6
+weight_decay: 0.01              # Lighter weight decay for low data
+worker_seeding: all
+workers: 8

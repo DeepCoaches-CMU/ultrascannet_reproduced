@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+
+# Virtual environments
+venv/
+.venv/
+
+# Local data and generated datasets (recreated via setup_dataset.py)
+datasets/
+
+# Runtime logs and job outputs
+log_dir/
+ultrascannet/log_dir/
+
+# Training/evaluation artifacts (recreated by training/validation scripts)
+weights/
+
+# TensorBoard event files
+events.out.tfevents.*
+
+# Local metrics exports generated during runs
+ultrascannet/metrics/run_metrics_summary.csv
+ultrascannet/metrics/run_metrics_success_only.csv
+
+# OS/editor noise
+.DS_Store
+.vscode/

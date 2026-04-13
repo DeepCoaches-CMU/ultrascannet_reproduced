@@ -1,0 +1,66 @@
+✅ Validating: mamba_vision_T2_baseline_BUSI
+
+
+FLOPS: 5118512768.0 PARAMS: 34440931.0
+Inference TIME 0.054204463958740234 ms
+
+✅ Validating: UltraScanNet
+
+FLOPS: 5593428608.0 PARAMS: 36479811.0
+Inference TIME 5.843877792358398 ms
+
+✅ Validating: resnet50_BUSI
+
+
+FLOPS: 4131700736.0 PARAMS: 23514179.0
+Inference TIME 0.021584033966064453 ms
+
+
+✅ Validating: mobilenetv2_100_BUSI
+
+FLOPS: 299562112.0 PARAMS: 2193603.0
+Inference TIME 0.02264261245727539 ms
+
+✅ Validating: densenet121_BUSI
+
+densenet121         : 6.956931 | 6.956931
+
+FLOPS: 2833367552.0 PARAMS: 6873283.0
+Inference TIME 0.05797624588012695 ms
+
+✅ Validating: vit_small_patch16_224_BUSI
+
+
+
+FLOPS: 4248400512.0 PARAMS: 21590787.0
+Inference TIME 0.02224445343017578 ms
+
+
+✅ Validating: efficientnet_b0_BUSI
+
+FLOPS: 384602592.0 PARAMS: 3969375.0
+Inference TIME 0.028154850006103516 ms
+
+
+✅ Validating: convnext_tiny_BUSI
+
+FLOPS: 4454803968.0 PARAMS: 27799491.0
+Inference TIME 0.02826213836669922 ms
+
+
+✅ Validating: swin_tiny_patch4_window7_224_BUSI
+
+FLOPS: 4371086112.0 PARAMS: 27498339.0
+Inference TIME 0.04446268081665039 ms
+
+
+✅ Validating: deit_tiny_patch16_224_BUSI
+
+FLOPS: 1078442304.0 PARAMS: 5486979.0
+Inference TIME 0.022115707397460938 ms
+
+
+✅ Validating: maxvit_tiny_rw_224_BUSI
+
+FLOPS: 4890785024.0 PARAMS: 28454547.0
+Inference TIME 0.07603883743286133 ms

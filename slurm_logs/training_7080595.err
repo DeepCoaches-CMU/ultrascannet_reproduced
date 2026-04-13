@@ -1,0 +1,53 @@
+/home/jgibson2/projects/UltraScanNet/venv/lib/python3.13/site-packages/torch/cuda/__init__.py:180: UserWarning: CUDA initialization: The NVIDIA driver on your system is too old (found version 12090). Please update your GPU driver by downloading and installing a new version from the URL: http://www.nvidia.com/Download/index.aspx Alternatively, go to: https://pytorch.org to install a PyTorch version that has been compiled with your version of the CUDA driver. (Triggered internally at /pytorch/c10/cuda/CUDAFunctions.cpp:119.)
+  return torch._C._cuda_getDeviceCount() > 0
+/home/jgibson2/projects/UltraScanNet/venv/lib/python3.13/site-packages/timm/models/registry.py:4: FutureWarning: Importing from timm.models.registry is deprecated, please import via timm.models
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.models", FutureWarning)
+/home/jgibson2/projects/UltraScanNet/venv/lib/python3.13/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+Traceback (most recent call last):
+  File "/home/jgibson2/projects/UltraScanNet/ultrascannet/train.py", line 44, in <module>
+    from models.ultra_scan_net import *
+  File "/home/jgibson2/projects/UltraScanNet/ultrascannet/models/ultra_scan_net.py", line 27, in <module>
+    from mamba_ssm.ops.selective_scan_interface import selective_scan_fn
+ModuleNotFoundError: No module named 'mamba_ssm'
+E0412 17:29:38.449000 1302156 venv/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/api.py:986] failed (exitcode: 1) local_rank: 0 (pid: 1302167) of binary: /home/jgibson2/projects/UltraScanNet/venv/bin/python
+Traceback (most recent call last):
+  File "/home/jgibson2/projects/UltraScanNet/venv/bin/torchrun", line 7, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/home/jgibson2/projects/UltraScanNet/venv/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 362, in wrapper
+    return f(*args, **kwargs)
+  File "/home/jgibson2/projects/UltraScanNet/venv/lib/python3.13/site-packages/torch/distributed/run.py", line 990, in main
+    run(args)
+    ~~~^^^^^^
+  File "/home/jgibson2/projects/UltraScanNet/venv/lib/python3.13/site-packages/torch/distributed/run.py", line 981, in run
+    elastic_launch(
+    ~~~~~~~~~~~~~~~
+        config=config,
+        ~~~~~~~~~~~~~~
+        entrypoint=cmd,
+        ~~~~~~~~~~~~~~~
+    )(*cmd_args)
+    ~^^^^^^^^^^^
+  File "/home/jgibson2/projects/UltraScanNet/venv/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 170, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/home/jgibson2/projects/UltraScanNet/venv/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 317, in launch_agent
+    raise ChildFailedError(
+    ...<2 lines>...
+    )
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+ultrascannet/train.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2026-04-12_17:29:38
+  host      : babel-q5-24.ib
+  rank      : 0 (local_rank: 0)
+  exitcode  : 1 (pid: 1302167)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================

@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/home/jgibson2/projects/UltraScanNet/ultrascannet/val_simple.py", line 57, in <module>
+    from sklearn.metrics import precision_recall_fscore_support
+ModuleNotFoundError: No module named 'sklearn'
+Traceback (most recent call last):
+  File "/home/jgibson2/projects/UltraScanNet/ultrascannet/launch_validation.py", line 98, in <module>
+    main()
+  File "/home/jgibson2/projects/UltraScanNet/ultrascannet/launch_validation.py", line 94, in main
+    subprocess.run(cmd, cwd=Path(__file__).parent, check=True)
+  File "/usr/lib64/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['python3', 'val_simple.py', '-c', '/home/jgibson2/projects/UltraScanNet/weights/ultra_scan_net_BUSI/args.yaml', '--loadcheckpoint', '/home/jgibson2/projects/UltraScanNet/weights/ultra_scan_net_BUSI/model_best.pth.tar', '--data_dir', '/home/jgibson2/projects/UltraScanNet/datasets/BUSI_split']' returned non-zero exit status 1.
