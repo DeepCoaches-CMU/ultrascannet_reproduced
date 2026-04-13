@@ -1,0 +1,10 @@
+source,job_id,experiment,best_top1,best_epoch,eval_loss,precision,recall,f1,checkpoint_path,log_file
+training.slurm,7080595,,,,,,,,,slurm_logs/training_7080595.err
+training.slurm,7081032,,,,,,,,,slurm_logs/training_7081032.err
+training.slurm,7081074,,,,,,,,,slurm_logs/training_7081074.err
+training.slurm,7081087,ultra_scan_net_BUSI,84.61538461538461,25,,,,,/home/jgibson2/projects/UltraScanNet/weights/ultra_scan_net_BUSI/checkpoint-25.pth.tar,slurm_logs/training_7081087.err
+training.slurm,7081158,ultra_scan_net_BUSI,87.17948737511269,37,,,,,/home/jgibson2/projects/UltraScanNet/weights/ultra_scan_net_BUSI/checkpoint-37.pth.tar,slurm_logs/training_7081158.err
+training.slurm,7081159,,,,,,,,,slurm_logs/training_7081159.err
+evaluation.slurm,7081185,,87.17948737511269,,0.5037810496794872,0.8551625301283304,0.8649881408502097,0.8599013389711064,,slurm_logs/evaluation_7081185.out
+launch_experiments.slurm,7081199,ultra_scan_net_BUSI,86.53846192971254,37,,,,,/home/jgibson2/projects/UltraScanNet/weights/ultra_scan_net_BUSI/checkpoint-37.pth.tar,slurm_logs/launch_experiments_7081199.err
+launch_experiments_ablation.slurm,7081306,learned_pos_convblock_posenc_hybrid,87.82051321176382,36,,,,,/home/jgibson2/projects/UltraScanNet/weights/learned_pos_convblock_posenc_hybrid/checkpoint-36.pth.tar,slurm_logs/launch_ablation_7081306.err

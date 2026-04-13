@@ -20,10 +20,6 @@ weights/
 # TensorBoard event files
 events.out.tfevents.*
 
-# Local metrics exports generated during runs
-ultrascannet/metrics/run_metrics_summary.csv
-ultrascannet/metrics/run_metrics_success_only.csv
-
 # OS/editor noise
 .DS_Store
 .vscode/
