@@ -11,8 +11,30 @@
 
 set -euo pipefail
 
-SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
-PROJECT_DIR=$(cd -- "$SCRIPT_DIR/.." && pwd)
+resolve_project_dir() {
+    local candidates=()
+    if [[ -n "${PROJECT_DIR:-}" ]]; then
+        candidates+=("$PROJECT_DIR")
+    fi
+    if [[ -n "${SLURM_SUBMIT_DIR:-}" ]]; then
+        candidates+=("$SLURM_SUBMIT_DIR" "$SLURM_SUBMIT_DIR/..")
+    fi
+    candidates+=("$PWD" "$PWD/.." "/home/jgibson2/projects/UltraScanNet")
+
+    for candidate in "${candidates[@]}"; do
+        if [[ -f "$candidate/paths.yaml" && -f "$candidate/ultrascannet/val_simple.py" ]]; then
+            cd "$candidate" >/dev/null 2>&1 && pwd
+            return 0
+        fi
+    done
+
+    return 1
+}
+
+PROJECT_DIR=$(resolve_project_dir) || {
+    echo "Unable to resolve project root. Set PROJECT_DIR before submitting." >&2
+    exit 1
+}
 
 
 read_path_from_yaml() {
@@ -47,12 +69,17 @@ echo "Job started on $(hostname) at $(date)"
 echo "SLURM_JOB_ID: $SLURM_JOB_ID"
 
 cd "$PROJECT_DIR"
-source venv/bin/activate
+if [[ -f "$PROJECT_DIR/venv/bin/activate" ]]; then
+    source "$PROJECT_DIR/venv/bin/activate"
+else
+    echo "Virtual environment not found at $PROJECT_DIR/venv/bin/activate" >&2
+    exit 1
+fi
 
-export PYTHONPATH=$PROJECT_DIR:$PYTHONPATH
-export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
+export PYTHONPATH="$PROJECT_DIR:${PYTHONPATH:-}"
+export OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK:-1}"
 
-mkdir -p $PROJECT_DIR/slurm_logs
+mkdir -p "$PROJECT_DIR/slurm_logs"
 
 DATA_DIR=${1:-$(read_path_from_yaml busi_split_dir)}
 CHECKPOINT=${2:-$(read_path_from_yaml ultrascannet_checkpoint)}
@@ -74,7 +101,7 @@ echo "Checkpoint : $CHECKPOINT"
 echo "Args file  : $ARGS_PATH"
 echo "Experiment : $EXPERIMENT_NAME"
 
-PYTHONPATH=$PROJECT_DIR python3 ultrascannet/val_simple.py \
+PYTHONPATH="$PROJECT_DIR" python ultrascannet/val_simple.py \
     -c "$ARGS_PATH" \
     --loadcheckpoint "$CHECKPOINT" \
     --data_dir "$DATA_DIR" \

@@ -9,6 +9,7 @@ Expects checkpoints at:
 """
 
 import subprocess
+import sys
 from pathlib import Path
 
 import yaml
@@ -85,10 +86,11 @@ def main():
                 continue
 
             cmd = [
-                "python3", "val_simple.py",
+                sys.executable, "val_simple.py",
                 "-c", str(args_path),
                 "--loadcheckpoint", str(checkpoint_path),
                 "--data_dir", ds["path"],
+                "--metrics-json", str(ckpt_dir / "evaluation_metrics.json"),
             ]
             print(f"\n✅ Validating: {experiment_name}\n")
             subprocess.run(cmd, cwd=Path(__file__).parent, check=True)

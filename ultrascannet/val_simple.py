@@ -15,6 +15,7 @@ Hacked together by / Copyright 2023 Ross Wightman (https://github.com/rwightman)
 """
 import warnings
 warnings.filterwarnings("ignore")
+import json
 from PIL import Image
 import torch
 import torch.nn.functional as F
@@ -29,6 +30,7 @@ import time
 import yaml
 import os
 import logging
+from pathlib import Path
 from collections import OrderedDict
 from contextlib import suppress
 
@@ -359,6 +361,8 @@ group.add_argument('--validate_only', action='store_true', default=False,
                     help='run model validation only')
 group.add_argument('--infer_only', action='store_true', default=False,
                     help='run only inference')
+group.add_argument('--metrics-json', default='', type=str, metavar='PATH',
+                    help='optional path to write validation metrics as JSON')
 
 group.add_argument('--no_saver', action='store_true', default=False,
                     help='Save checkpoints')
@@ -647,6 +651,17 @@ def main():
     eval_metrics = validate(model, loader_eval, validate_loss_fn, args, amp_autocast=amp_autocast)
     print(args.model)
     print(eval_metrics)
+    metrics_json = json.dumps(eval_metrics, indent=2)
+    print("JSON_METRICS_START")
+    print(metrics_json)
+    print("JSON_METRICS_END")
+
+    if args.metrics_json:
+        metrics_path = Path(args.metrics_json)
+        metrics_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(metrics_path, "w") as f:
+            f.write(metrics_json + "\n")
+        print(f"Saved metrics JSON to {metrics_path}")
     # print("\n".join([f"{k:<10}: {v:.4f}" for k, v in eval_metrics.items()]))
     # Format the metrics as string
 

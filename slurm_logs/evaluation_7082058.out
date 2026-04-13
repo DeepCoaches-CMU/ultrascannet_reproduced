@@ -1,0 +1,4 @@
+==== UltraScanNet Evaluation ====
+Job started on babel-y9-08 at Sun Apr 12 10:44:39 PM EDT 2026
+SLURM_JOB_ID: 7082058
+Running ultrascannet/launch_validation.py using paths.yaml

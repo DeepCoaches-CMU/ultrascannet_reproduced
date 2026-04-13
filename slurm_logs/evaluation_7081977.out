@@ -1,0 +1,146 @@
+==== UltraScanNet Evaluation ====
+Job started on babel-x5-32 at Sun Apr 12 10:25:12 PM EDT 2026
+SLURM_JOB_ID: 7081977
+Running ultrascannet/launch_validation.py using paths.yaml
+Layer scale conv None
+First layer convblock_posenc
+⚠️ Skipping classifier head due to num_classes mismatch (1000 in checkpoint vs 3 in model)
+The model and loaded state dict do not match exactly
+
+unexpected key in source state_dict: levels.1.blocks.2.conv1.weight, levels.1.blocks.2.conv1.bias, levels.1.blocks.2.norm1.weight, levels.1.blocks.2.norm1.bias, levels.1.blocks.2.norm1.running_mean, levels.1.blocks.2.norm1.running_var, levels.1.blocks.2.norm1.num_batches_tracked, levels.1.blocks.2.conv2.weight, levels.1.blocks.2.conv2.bias, levels.1.blocks.2.norm2.weight, levels.1.blocks.2.norm2.bias, levels.1.blocks.2.norm2.running_mean, levels.1.blocks.2.norm2.running_var, levels.1.blocks.2.norm2.num_batches_tracked, levels.2.blocks.4.mixer.A_log, levels.2.blocks.4.mixer.D, levels.2.blocks.4.mixer.in_proj.weight, levels.2.blocks.4.mixer.x_proj.weight, levels.2.blocks.4.mixer.dt_proj.weight, levels.2.blocks.4.mixer.dt_proj.bias, levels.2.blocks.4.mixer.out_proj.weight, levels.2.blocks.4.mixer.conv1d_x.weight, levels.2.blocks.4.mixer.conv1d_z.weight, levels.2.blocks.5.mixer.A_log, levels.2.blocks.5.mixer.D, levels.2.blocks.5.mixer.in_proj.weight, levels.2.blocks.5.mixer.x_proj.weight, levels.2.blocks.5.mixer.dt_proj.weight, levels.2.blocks.5.mixer.dt_proj.bias, levels.2.blocks.5.mixer.out_proj.weight, levels.2.blocks.5.mixer.conv1d_x.weight, levels.2.blocks.5.mixer.conv1d_z.weight
+
+missing keys in source state_dict: patch_embed.pos_embed, levels.0.pos_embed, levels.1.blocks.2.local_rep.conv1.weight, levels.1.blocks.2.local_rep.conv1.bias, levels.1.blocks.2.local_rep.norm1.weight, levels.1.blocks.2.local_rep.norm1.bias, levels.1.blocks.2.local_rep.norm1.running_mean, levels.1.blocks.2.local_rep.norm1.running_var, levels.1.blocks.2.local_rep.conv2.weight, levels.1.blocks.2.local_rep.conv2.bias, levels.1.blocks.2.local_rep.norm2.weight, levels.1.blocks.2.local_rep.norm2.bias, levels.1.blocks.2.local_rep.norm2.running_mean, levels.1.blocks.2.local_rep.norm2.running_var, levels.1.blocks.2.proj.weight, levels.1.blocks.2.proj.bias, levels.1.blocks.2.norm.weight, levels.1.blocks.2.norm.bias, levels.1.blocks.2.transformer.layers.0.self_attn.in_proj_weight, levels.1.blocks.2.transformer.layers.0.self_attn.in_proj_bias, levels.1.blocks.2.transformer.layers.0.self_attn.out_proj.weight, levels.1.blocks.2.transformer.layers.0.self_attn.out_proj.bias, levels.1.blocks.2.transformer.layers.0.linear1.weight, levels.1.blocks.2.transformer.layers.0.linear1.bias, levels.1.blocks.2.transformer.layers.0.linear2.weight, levels.1.blocks.2.transformer.layers.0.linear2.bias, levels.1.blocks.2.transformer.layers.0.norm1.weight, levels.1.blocks.2.transformer.layers.0.norm1.bias, levels.1.blocks.2.transformer.layers.0.norm2.weight, levels.1.blocks.2.transformer.layers.0.norm2.bias, levels.1.blocks.2.transformer.layers.1.self_attn.in_proj_weight, levels.1.blocks.2.transformer.layers.1.self_attn.in_proj_bias, levels.1.blocks.2.transformer.layers.1.self_attn.out_proj.weight, levels.1.blocks.2.transformer.layers.1.self_attn.out_proj.bias, levels.1.blocks.2.transformer.layers.1.linear1.weight, levels.1.blocks.2.transformer.layers.1.linear1.bias, levels.1.blocks.2.transformer.layers.1.linear2.weight, levels.1.blocks.2.transformer.layers.1.linear2.bias, levels.1.blocks.2.transformer.layers.1.norm1.weight, levels.1.blocks.2.transformer.layers.1.norm1.bias, levels.1.blocks.2.transformer.layers.1.norm2.weight, levels.1.blocks.2.transformer.layers.1.norm2.bias, levels.1.blocks.2.sgu_gate.weight, levels.1.blocks.2.sgu_gate.bias, levels.1.blocks.2.fuse.weight, levels.1.blocks.2.fuse.bias, levels.2.blocks.0.mixer.temb, levels.2.blocks.0.mixer.z_gate.weight, levels.2.blocks.0.mixer.z_gate.bias, levels.2.blocks.0.mixer.residual_proj.0.weight, levels.2.blocks.0.mixer.residual_proj.0.bias, levels.2.blocks.0.mixer.residual_proj.2.weight, levels.2.blocks.0.mixer.residual_proj.2.bias, levels.2.blocks.1.mixer.temb, levels.2.blocks.1.mixer.z_gate.weight, levels.2.blocks.1.mixer.z_gate.bias, levels.2.blocks.1.mixer.residual_proj.0.weight, levels.2.blocks.1.mixer.residual_proj.0.bias, levels.2.blocks.1.mixer.residual_proj.2.weight, levels.2.blocks.1.mixer.residual_proj.2.bias, levels.2.blocks.2.mixer.temb, levels.2.blocks.2.mixer.z_gate.weight, levels.2.blocks.2.mixer.z_gate.bias, levels.2.blocks.2.mixer.residual_proj.0.weight, levels.2.blocks.2.mixer.residual_proj.0.bias, levels.2.blocks.2.mixer.residual_proj.2.weight, levels.2.blocks.2.mixer.residual_proj.2.bias, levels.2.blocks.3.mixer.temb, levels.2.blocks.3.mixer.z_gate.weight, levels.2.blocks.3.mixer.z_gate.bias, levels.2.blocks.3.mixer.residual_proj.0.weight, levels.2.blocks.3.mixer.residual_proj.0.bias, levels.2.blocks.3.mixer.residual_proj.2.weight, levels.2.blocks.3.mixer.residual_proj.2.bias, levels.2.blocks.4.mixer.dwconv.weight, levels.2.blocks.4.mixer.dwconv.bias, levels.2.blocks.4.mixer.norm.weight, levels.2.blocks.4.mixer.norm.bias, levels.2.blocks.4.mixer.pwff.0.weight, levels.2.blocks.4.mixer.pwff.0.bias, levels.2.blocks.4.mixer.pwff.2.weight, levels.2.blocks.4.mixer.pwff.2.bias, levels.2.blocks.5.mixer.qkv.weight, levels.2.blocks.5.mixer.qkv.bias, levels.2.blocks.5.mixer.proj.weight, levels.2.blocks.5.mixer.proj.bias, levels.3.blocks.0.mixer.temb, levels.3.blocks.0.mixer.z_gate.weight, levels.3.blocks.0.mixer.z_gate.bias, levels.3.blocks.0.mixer.residual_proj.0.weight, levels.3.blocks.0.mixer.residual_proj.0.bias, levels.3.blocks.0.mixer.residual_proj.2.weight, levels.3.blocks.0.mixer.residual_proj.2.bias, levels.3.blocks.1.mixer.temb, levels.3.blocks.1.mixer.z_gate.weight, levels.3.blocks.1.mixer.z_gate.bias, levels.3.blocks.1.mixer.residual_proj.0.weight, levels.3.blocks.1.mixer.residual_proj.0.bias, levels.3.blocks.1.mixer.residual_proj.2.weight, levels.3.blocks.1.mixer.residual_proj.2.bias, head.weight, head.bias
+
+ultra_scan_net      : 37.200451 | 37.200451
+Value 0: 87 occurrences
+Value 1: 42 occurrences
+Value 2: 27 occurrences
+ultra_scan_net
+OrderedDict({'loss': 1.1279046474358974, 'top1': 25.0, 'top5': 100.0, 'precision': 0.5572996148535717, 'recall': 0.38721644468770905, 'f1': 0.22119771603420482, 'classwise': {'names': ['0', '1', '2'], 'precision': [0.8181818181818182, 0.6666666666666666, 0.18705035971223022], 'recall': [0.10344827586206896, 0.09523809523809523, 0.9629629629629629], 'f1': [0.1836734693877551, 0.16666666666666666, 0.3132530120481928], 'support': [87, 42, 27]}, 'roc_auc_per_class': {'0': 0.5910378144261204, '1': 0.6340852130325815, '2': 0.6675279931093885}, 'pr_auc_per_class': {'0': 0.6601646035647387, '1': 0.40557264459455894, '2': 0.363586464044175}, 'sens_at_90spec': {'0': {'sensitivity@90%spec': 0.19540229885057472, 'achieved_spec': 0.9130434782608696, 'threshold': 0.33642578125}, '1': {'sensitivity@90%spec': 0.19047619047619047, 'achieved_spec': 0.8859649122807017, 'threshold': 0.34033203125}, '2': {'sensitivity@90%spec': 0.18518518518518517, 'achieved_spec': 0.8992248062015504, 'threshold': 0.4326171875}}, 'ci': {'f1_macro_mean': 0.21969503653025668, 'f1_macro_95ci': [0.15459283319666622, 0.28952050476433044], 'recall_ci_per_class': {'0': {'mean': 0.10337499193346839, 'lo': 0.042541993281075025, 'hi': 0.1686746987951807}, '1': {'mean': 0.0959305532160175, 'lo': 0.020822704081632653, 'hi': 0.18608284883720927}, '2': {'mean': 0.9658474312793, 'lo': 0.875, 'hi': 1.0}}, 'auc_ci_per_class': {'0': {'mean': 0.5913729304175654, 'lo': 0.49460943103753385, 'hi': 0.6775045387027562}, '1': {'mean': 0.6336264752977244, 'lo': 0.5331115246093475, 'hi': 0.7286961206896552}, '2': {'mean': 0.670315828997156, 'lo': 0.5548806040227796, 'hi': 0.7789940828402367}}}, 'confusion_matrix': [[9, 2, 76], [1, 4, 37], [1, 0, 26]]})
+JSON_METRICS_START
+{
+  "loss": 1.1279046474358974,
+  "top1": 25.0,
+  "top5": 100.0,
+  "precision": 0.5572996148535717,
+  "recall": 0.38721644468770905,
+  "f1": 0.22119771603420482,
+  "classwise": {
+    "names": [
+      "0",
+      "1",
+      "2"
+    ],
+    "precision": [
+      0.8181818181818182,
+      0.6666666666666666,
+      0.18705035971223022
+    ],
+    "recall": [
+      0.10344827586206896,
+      0.09523809523809523,
+      0.9629629629629629
+    ],
+    "f1": [
+      0.1836734693877551,
+      0.16666666666666666,
+      0.3132530120481928
+    ],
+    "support": [
+      87,
+      42,
+      27
+    ]
+  },
+  "roc_auc_per_class": {
+    "0": 0.5910378144261204,
+    "1": 0.6340852130325815,
+    "2": 0.6675279931093885
+  },
+  "pr_auc_per_class": {
+    "0": 0.6601646035647387,
+    "1": 0.40557264459455894,
+    "2": 0.363586464044175
+  },
+  "sens_at_90spec": {
+    "0": {
+      "sensitivity@90%spec": 0.19540229885057472,
+      "achieved_spec": 0.9130434782608696,
+      "threshold": 0.33642578125
+    },
+    "1": {
+      "sensitivity@90%spec": 0.19047619047619047,
+      "achieved_spec": 0.8859649122807017,
+      "threshold": 0.34033203125
+    },
+    "2": {
+      "sensitivity@90%spec": 0.18518518518518517,
+      "achieved_spec": 0.8992248062015504,
+      "threshold": 0.4326171875
+    }
+  },
+  "ci": {
+    "f1_macro_mean": 0.21969503653025668,
+    "f1_macro_95ci": [
+      0.15459283319666622,
+      0.28952050476433044
+    ],
+    "recall_ci_per_class": {
+      "0": {
+        "mean": 0.10337499193346839,
+        "lo": 0.042541993281075025,
+        "hi": 0.1686746987951807
+      },
+      "1": {
+        "mean": 0.0959305532160175,
+        "lo": 0.020822704081632653,
+        "hi": 0.18608284883720927
+      },
+      "2": {
+        "mean": 0.9658474312793,
+        "lo": 0.875,
+        "hi": 1.0
+      }
+    },
+    "auc_ci_per_class": {
+      "0": {
+        "mean": 0.5913729304175654,
+        "lo": 0.49460943103753385,
+        "hi": 0.6775045387027562
+      },
+      "1": {
+        "mean": 0.6336264752977244,
+        "lo": 0.5331115246093475,
+        "hi": 0.7286961206896552
+      },
+      "2": {
+        "mean": 0.670315828997156,
+        "lo": 0.5548806040227796,
+        "hi": 0.7789940828402367
+      }
+    }
+  },
+  "confusion_matrix": [
+    [
+      9,
+      2,
+      76
+    ],
+    [
+      1,
+      4,
+      37
+    ],
+    [
+      1,
+      0,
+      26
+    ]
+  ]
+}
+JSON_METRICS_END
+Saved metrics JSON to /home/jgibson2/projects/UltraScanNet/weights/ultra_scan_net_BUSI/evaluation_metrics.json
+
+✅ Validating: ultra_scan_net_BUSI
+
+Job finished at Sun Apr 12 10:25:43 PM EDT 2026

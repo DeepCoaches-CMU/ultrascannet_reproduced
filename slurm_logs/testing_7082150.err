@@ -1,0 +1,12 @@
+Training with a single process on 1 GPUs.
+Data processing configuration for current model + dataset:
+	input_size: (3, 224, 224)
+	interpolation: bicubic
+	mean: (0.485, 0.456, 0.406)
+	std: (0.229, 0.224, 0.225)
+	crop_pct: 1.0
+	crop_mode: center
+Using native Torch AMP. Training in mixed precision.
+Loading checkpoint /home/jgibson2/projects/UltraScanNet/weights/ultra_scan_net_BUSI/model_best.pth.tar, checking for existing parameters if their shape match
+Test: [   0/9]  Time: 7.680 (7.680)  Loss:  0.3252 (0.3252)  Acc@1: 100.0000 (100.0000)  Acc@5: 100.0000 (100.0000)
+Test: [   9/9]  Time: 6.688 (1.446)  Loss:  0.6699 (0.5099)  Acc@1: 83.3333 (87.8205)  Acc@5: 100.0000 (100.0000)
