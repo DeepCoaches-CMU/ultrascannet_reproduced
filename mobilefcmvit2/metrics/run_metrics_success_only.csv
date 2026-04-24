@@ -1,0 +1,6 @@
+source,job_id,experiment,best_top1,best_epoch,eval_loss,precision,recall,f1,checkpoint_path,log_file
+launch_experiments_ablation.slurm,7082093,learned_pos_convblock_posenc_hybrid,89.74358993921524,42,,,,,/home/jgibson2/projects/mobilefcmvit2/weights/learned_pos_convblock_posenc_hybrid/checkpoint-42.pth.tar,slurm_logs/launch_ablation_7082093.err
+testing.slurm,7082150,mobilefcmvit2_net_BUSI,87.82051301613832,,0.509940905448718,0.8724922335452776,0.8517910356990818,0.8610665478312537,/home/jgibson2/projects/mobilefcmvit2/weights/mobilefcmvit2_net_BUSI/model_best.pth.tar,slurm_logs/testing_7082150.out
+launch_experiments.slurm,7082090,mobilefcmvit2_net_BUSI,87.82051301613832,39,,,,,/home/jgibson2/projects/mobilefcmvit2/weights/mobilefcmvit2_net_BUSI/checkpoint-39.pth.tar,slurm_logs/launch_experiments_7082090.err
+evaluation.slurm,7081185,,87.17948737511269,,0.5037810496794872,0.8551625301283304,0.8649881408502097,0.8599013389711064,,slurm_logs/evaluation_7081185.out
+training.slurm,7081158,mobilefcmvit2_net_BUSI,87.17948737511269,37,,,,,/home/jgibson2/projects/mobilefcmvit2/weights/mobilefcmvit2_net_BUSI/checkpoint-37.pth.tar,slurm_logs/training_7081158.err

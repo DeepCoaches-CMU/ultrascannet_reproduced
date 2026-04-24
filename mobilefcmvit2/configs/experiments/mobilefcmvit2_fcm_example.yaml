@@ -1,0 +1,39 @@
+# Example config for training MobileFCMVit2 with FCM fusion
+
+# Dataset and FCM
+fcm_dir: mobilefcmvit2/fcm
+# Path to ImageNet-style data root
+# (should have 'train' and 'val' subfolders)
+data_dir: /path/to/dataset
+
+# Model
+model: mobilefcmvit2_net
+num_classes: 3
+pretrained: false
+img_size: 224
+in_chans: 4
+
+# Training
+batch_size: 32
+validation_batch_size: 32
+epochs: 100
+lr: 0.001
+weight_decay: 0.05
+optimizer: adamw
+
+# Augmentation
+color_jitter: 0.4
+hflip: 0.5
+vflip: 0.0
+scale: [0.08, 1.0]
+ratio: [0.75, 1.3333333333333333]
+
+# Scheduler
+sched: cosine
+warmup_epochs: 5
+min_lr: 1e-5
+
+# Misc
+workers: 8
+output: ./output
+log_dir: ./log_dir

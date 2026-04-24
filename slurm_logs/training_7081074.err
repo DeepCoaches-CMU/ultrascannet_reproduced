@@ -1,56 +1,0 @@
-/home/jgibson2/projects/UltraScanNet/venv/lib64/python3.12/site-packages/timm/models/registry.py:4: FutureWarning: Importing from timm.models.registry is deprecated, please import via timm.models
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.models", FutureWarning)
-/home/jgibson2/projects/UltraScanNet/venv/lib64/python3.12/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-WARNING: You've requested to log metrics to wandb but package not found. Metrics not being logged to wandb, try `pip install wandb`
-Training with a single process on 1 GPUs.
-  0%|          | 0.00/402M [00:00<?, ?B/s]  0%|          | 640k/402M [00:00<01:06, 6.32MB/s]  1%|          | 4.12M/402M [00:00<00:18, 23.0MB/s]  3%|▎         | 12.6M/402M [00:00<00:07, 52.3MB/s]  6%|▌         | 23.0M/402M [00:00<00:05, 70.9MB/s]  8%|▊         | 30.9M/402M [00:00<00:05, 73.2MB/s] 10%|▉         | 38.8M/402M [00:00<00:05, 73.5MB/s] 11%|█▏        | 45.8M/402M [00:00<00:05, 72.8MB/s] 14%|█▍        | 56.8M/402M [00:00<00:04, 85.6MB/s] 16%|█▋        | 65.9M/402M [00:00<00:03, 88.4MB/s] 19%|█▊        | 74.8M/402M [00:01<00:03, 89.8MB/s] 21%|██▏       | 86.1M/402M [00:01<00:03, 98.5MB/s] 24%|██▍       | 95.6M/402M [00:01<00:03, 97.5MB/s] 26%|██▌       | 105M/402M [00:01<00:03, 96.7MB/s]  29%|██▉       | 116M/402M [00:01<00:02, 103MB/s]  31%|███▏      | 126M/402M [00:01<00:02, 101MB/s] 34%|███▍      | 136M/402M [00:01<00:02, 101MB/s] 36%|███▋      | 146M/402M [00:01<00:02, 103MB/s] 39%|███▉      | 156M/402M [00:01<00:02, 101MB/s] 41%|████▏     | 166M/402M [00:01<00:02, 101MB/s] 44%|████▍     | 177M/402M [00:02<00:02, 104MB/s] 46%|████▋     | 187M/402M [00:02<00:02, 102MB/s] 49%|████▉     | 197M/402M [00:02<00:02, 100MB/s] 52%|█████▏    | 208M/402M [00:02<00:02, 98.9MB/s] 55%|█████▍    | 219M/402M [00:02<00:01, 105MB/s]  57%|█████▋    | 230M/402M [00:02<00:01, 102MB/s] 60%|█████▉    | 239M/402M [00:02<00:01, 100MB/s] 62%|██████▏   | 251M/402M [00:02<00:01, 105MB/s] 65%|██████▍   | 261M/402M [00:02<00:01, 102MB/s] 67%|██████▋   | 271M/402M [00:03<00:01, 103MB/s] 70%|██████▉   | 281M/402M [00:03<00:01, 104MB/s] 72%|███████▏  | 291M/402M [00:03<00:01, 102MB/s] 75%|███████▍  | 301M/402M [00:03<00:01, 100MB/s] 78%|███████▊  | 312M/402M [00:03<00:00, 98.9MB/s] 80%|████████  | 324M/402M [00:03<00:00, 105MB/s]  83%|████████▎ | 334M/402M [00:03<00:00, 102MB/s] 85%|████████▌ | 344M/402M [00:03<00:00, 101MB/s] 88%|████████▊ | 354M/402M [00:03<00:00, 105MB/s] 91%|█████████ | 365M/402M [00:04<00:00, 101MB/s] 93%|█████████▎| 375M/402M [00:04<00:00, 101MB/s] 96%|█████████▌| 386M/402M [00:04<00:00, 98.9MB/s] 99%|█████████▉| 397M/402M [00:04<00:00, 105MB/s] 100%|██████████| 402M/402M [00:04<00:00, 95.7MB/s]
-Data processing configuration for current model + dataset:
-	input_size: (3, 224, 224)
-	interpolation: bicubic
-	mean: (0.485, 0.456, 0.406)
-	std: (0.229, 0.224, 0.225)
-	crop_pct: 1.0
-	crop_mode: center
-Using native Torch AMP. Training in mixed precision.
-Scheduled epochs: 160
-Traceback (most recent call last):
-  File "/home/jgibson2/projects/UltraScanNet/ultrascannet/train.py", line 1162, in <module>
-    main()
-  File "/home/jgibson2/projects/UltraScanNet/ultrascannet/train.py", line 825, in main
-    artifact = wandb.Artifact(name="model-structure", type="text")
-               ^^^^^
-NameError: name 'wandb' is not defined
-E0412 19:08:25.906000 1368696 venv/lib/python3.12/site-packages/torch/distributed/elastic/multiprocessing/api.py:986] failed (exitcode: 1) local_rank: 0 (pid: 1368727) of binary: /home/jgibson2/projects/UltraScanNet/venv/bin/python
-Traceback (most recent call last):
-  File "/home/jgibson2/projects/UltraScanNet/venv/bin/torchrun", line 6, in <module>
-    sys.exit(main())
-             ^^^^^^
-  File "/home/jgibson2/projects/UltraScanNet/venv/lib64/python3.12/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 362, in wrapper
-    return f(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^
-  File "/home/jgibson2/projects/UltraScanNet/venv/lib64/python3.12/site-packages/torch/distributed/run.py", line 990, in main
-    run(args)
-  File "/home/jgibson2/projects/UltraScanNet/venv/lib64/python3.12/site-packages/torch/distributed/run.py", line 981, in run
-    elastic_launch(
-  File "/home/jgibson2/projects/UltraScanNet/venv/lib64/python3.12/site-packages/torch/distributed/launcher/api.py", line 170, in __call__
-    return launch_agent(self._config, self._entrypoint, list(args))
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jgibson2/projects/UltraScanNet/venv/lib64/python3.12/site-packages/torch/distributed/launcher/api.py", line 317, in launch_agent
-    raise ChildFailedError(
-torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
-============================================================
-ultrascannet/train.py FAILED
-------------------------------------------------------------
-Failures:
-  <NO_OTHER_FAILURES>
-------------------------------------------------------------
-Root Cause (first observed failure):
-[0]:
-  time      : 2026-04-12_19:08:25
-  host      : babel-w5-28.ib
-  rank      : 0 (local_rank: 0)
-  exitcode  : 1 (pid: 1368727)
-  error_file: <N/A>
-  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
-============================================================

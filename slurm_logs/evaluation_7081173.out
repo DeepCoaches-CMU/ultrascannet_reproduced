@@ -1,7 +1,0 @@
-==== UltraScanNet Evaluation ====
-Job started on babel-o5-28 at Sun Apr 12 19:33:22 EDT 2026
-SLURM_JOB_ID: 7081173
-Running ultrascannet/launch_validation.py using paths.yaml
-
-✅ Validating: ultra_scan_net_BUSI
-
