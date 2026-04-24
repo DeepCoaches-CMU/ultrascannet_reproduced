@@ -30,7 +30,7 @@ from torch.utils.data import DataLoader
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from mobilefcmvitv3.models import MobileFCMViTv3
 from mobilefcmvitv3.utils.dataset import BUSIDataset
-from mobilefcmvitv3.utils.augmentation import build_val_transform
+from mobilefcmvitv3.utils.augmentation import build_val_transform, build_tta_transforms
 from mobilefcmvitv3.utils.metrics import (
     compute_extended_metrics, save_metrics_json, compute_efficiency
 )
@@ -43,19 +43,21 @@ _logger = logging.getLogger('validate')
 def parse_args():
     p = argparse.ArgumentParser()
     p.add_argument('-c', '--config', default='', type=str)
-    p.add_argument('--checkpoint', type=str, required=True,
-                   help='Path to model_best.pth.tar')
+    p.add_argument('--checkpoint', type=str, required=True)
     p.add_argument('--data_dir', type=str, default='datasets/BUSI_split')
-    p.add_argument('--output_json', type=str, default='',
-                   help='Where to write evaluation_metrics.json')
+    p.add_argument('--output_json', type=str, default='')
     p.add_argument('--split', type=str, default='validation',
-                   choices=['train', 'validation'],
-                   help='Which split to evaluate on')
+                   choices=['train', 'validation'])
+    p.add_argument('--tta', action='store_true', default=False,
+                   help='Enable Test-Time Augmentation (8 views averaged)')
+    p.add_argument('--use_ema', action='store_true', default=False,
+                   help='Use EMA weights instead of live model weights')
     return p.parse_args()
 
 
 @torch.no_grad()
 def evaluate(model, loader, amp_autocast):
+    """Standard single-view evaluation."""
     model.eval()
     loss_fn = nn.CrossEntropyLoss().cuda()
     total_loss, total_correct, total_n = 0.0, 0, 0
@@ -64,7 +66,7 @@ def evaluate(model, loader, amp_autocast):
     for inputs, targets in loader:
         inputs, targets = inputs.cuda(), targets.cuda()
         with amp_autocast():
-            outputs, _, _ = model(inputs)   # unpack (logits, c_loss, e_loss)
+            outputs, _, _ = model(inputs)
         loss = loss_fn(outputs, targets)
         preds = outputs.argmax(1)
         total_loss += loss.item() * inputs.size(0)
@@ -74,13 +76,50 @@ def evaluate(model, loader, amp_autocast):
         all_targets.append(targets.cpu())
         all_probs.append(torch.softmax(outputs.float(), 1).cpu())
 
-    preds_np   = torch.cat(all_preds).numpy()
-    targets_np = torch.cat(all_targets).numpy()
-    probs_np   = torch.cat(all_probs).numpy()
-
     return {
         'loss':    total_loss / total_n,
         'top1':    100.0 * total_correct / total_n,
+        'preds':   torch.cat(all_preds).numpy(),
+        'targets': torch.cat(all_targets).numpy(),
+        'probs':   torch.cat(all_probs).numpy(),
+    }
+
+
+@torch.no_grad()
+def evaluate_tta(model, dataset, tta_transforms, amp_autocast, batch_size=16):
+    """
+    Test-Time Augmentation: run each TTA view through the model and
+    average the softmax probabilities before taking argmax.
+    """
+    model.eval()
+    n = len(dataset)
+    n_views = len(tta_transforms)
+    all_probs = torch.zeros(n, 3)   # accumulate averaged probs
+    all_targets = []
+
+    for view_idx, tf in enumerate(tta_transforms):
+        dataset.transform = tf
+        loader = DataLoader(dataset, batch_size=batch_size,
+                            shuffle=False, num_workers=4, pin_memory=True)
+        view_probs = []
+        for batch_idx, (inputs, targets) in enumerate(loader):
+            inputs = inputs.cuda()
+            with amp_autocast():
+                logits, _, _ = model(inputs)
+            view_probs.append(torch.softmax(logits.float(), 1).cpu())
+            if view_idx == 0:
+                all_targets.append(targets)
+        all_probs += torch.cat(view_probs) / n_views
+        _logger.info(f"  TTA view {view_idx+1}/{n_views} done")
+
+    targets_np = torch.cat(all_targets).numpy()
+    probs_np   = all_probs.numpy()
+    preds_np   = all_probs.argmax(1).numpy()
+    correct    = (preds_np == targets_np).sum()
+
+    return {
+        'loss':    float('nan'),
+        'top1':    100.0 * correct / n,
         'preds':   preds_np,
         'targets': targets_np,
         'probs':   probs_np,
@@ -112,42 +151,46 @@ def main():
         ffn_dropout=cfg.get('ffn_dropout', 0.0),
     ).cuda()
 
-    # Load checkpoint
+    # Load checkpoint — prefer live state_dict; use EMA only if explicitly requested
     ckpt = torch.load(args.checkpoint, map_location='cpu', weights_only=False)
-    state = ckpt.get('ema_state_dict') or ckpt.get('state_dict', ckpt)
+    if args.use_ema and ckpt.get('ema_state_dict') is not None:
+        state = ckpt['ema_state_dict']
+        _logger.info("Using EMA weights")
+    else:
+        state = ckpt.get('state_dict', ckpt)
+        _logger.info("Using live model weights")
     state = {k.replace('module.', ''): v for k, v in state.items()}
     missing, unexpected = model.load_state_dict(state, strict=False)
     _logger.info(f"Loaded checkpoint: {args.checkpoint}")
     if missing:
-        _logger.warning(f"  Missing keys: {missing[:5]}{'...' if len(missing) > 5 else ''}")
-    if unexpected:
-        _logger.warning(f"  Unexpected keys: {unexpected[:5]}{'...' if len(unexpected) > 5 else ''}")
+        _logger.warning(f"  Missing keys ({len(missing)}): {missing[:3]}...")
 
     # Efficiency
     params_M, flops_G, inf_ms = compute_efficiency(model, in_chans=3)
     _logger.info(f"Params: {params_M}M | FLOPs: {flops_G}G | Inference: {inf_ms}ms")
 
     # Data
-    val_tf  = build_val_transform(img_size=224)
     val_dir = str(Path(args.data_dir) / args.split)
-    from mobilefcmvitv3.utils.dataset import BUSIDataset
-    dataset = BUSIDataset(val_dir, transform=val_tf)
-
-    loader = DataLoader(
-        dataset,
-        batch_size=cfg.get('validation_batch_size', 16),
-        shuffle=False,
-        num_workers=cfg.get('workers', 8),
-        pin_memory=True,
-    )
-    _logger.info(f"Evaluating on {args.split}: {len(dataset)} samples")
-
-    # AMP
     amp_autocast = partial(torch.amp.autocast, 'cuda') if cfg.get('amp', True) else suppress
 
-    # Evaluate
-    results = evaluate(model, loader, amp_autocast)
-    _logger.info(f"Loss: {results['loss']:.4f} | Top-1: {results['top1']:.2f}%")
+    if args.tta:
+        _logger.info("Running TTA (8 views)...")
+        tta_tfs = build_tta_transforms(img_size=224)
+        # Dataset with placeholder transform — evaluate_tta swaps it per view
+        dataset = BUSIDataset(val_dir, transform=tta_tfs[0])
+        _logger.info(f"Evaluating on {args.split}: {len(dataset)} samples")
+        results = evaluate_tta(model, dataset, tta_tfs, amp_autocast,
+                               batch_size=cfg.get('validation_batch_size', 16))
+    else:
+        dataset = BUSIDataset(val_dir, transform=build_val_transform(img_size=224))
+        loader = DataLoader(dataset, batch_size=cfg.get('validation_batch_size', 16),
+                            shuffle=False, num_workers=cfg.get('workers', 8),
+                            pin_memory=True)
+        _logger.info(f"Evaluating on {args.split}: {len(dataset)} samples")
+        results = evaluate(model, loader, amp_autocast)
+
+    _logger.info(f"Top-1: {results['top1']:.2f}%" +
+                 (f" | Loss: {results['loss']:.4f}" if not args.tta else " (TTA)"))
 
     # Extended metrics
     class_names = getattr(dataset, 'classes', None)
@@ -156,15 +199,19 @@ def main():
         class_names=class_names, n_boot=500
     )
 
-    _logger.info(f"Precision (macro): {ext.get('precision_macro', 0):.4f}")
-    _logger.info(f"Recall    (macro): {ext.get('recall_macro', 0):.4f}")
-    _logger.info(f"F1        (macro): {ext.get('f1_macro', 0):.4f}")
-    if 'auc_macro' in ext:
-        _logger.info(f"AUC       (macro): {ext.get('auc_macro', 0):.4f}")
+    _logger.info(f"Precision: {ext.get('precision_macro', 0):.4f} | "
+                 f"Recall: {ext.get('recall_macro', 0):.4f} | "
+                 f"F1: {ext.get('f1_macro', 0):.4f} | "
+                 f"AUC: {ext.get('roc_auc_macro', 0):.4f}")
+
+    cm = ext.get('confusion_matrix')
+    if cm is not None:
+        _logger.info(f"Confusion matrix:\n{np.array(cm)}")
 
     record = {
         'checkpoint': args.checkpoint,
         'split': args.split,
+        'tta': args.tta,
         'loss': results['loss'],
         'top1': results['top1'],
         'params_M': params_M,
@@ -174,16 +221,10 @@ def main():
         'confusion_matrix': ext.get('confusion_matrix'),
     }
 
-    # Print confusion matrix
-    cm = ext.get('confusion_matrix')
-    if cm is not None:
-        _logger.info(f"Confusion matrix:\n{np.array(cm)}")
-
-    # Save
     out_path = args.output_json
     if not out_path:
-        ckpt_dir = Path(args.checkpoint).parent
-        out_path = str(ckpt_dir / 'evaluation_metrics.json')
+        suffix = '_tta' if args.tta else ''
+        out_path = str(Path(args.checkpoint).parent / f'evaluation_metrics{suffix}.json')
 
     Path(out_path).parent.mkdir(parents=True, exist_ok=True)
     save_metrics_json(record, out_path)

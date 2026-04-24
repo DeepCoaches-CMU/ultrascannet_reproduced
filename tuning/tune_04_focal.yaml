@@ -1,0 +1,89 @@
+# tuning/tune_04_focal.yaml
+#
+# Tuning run 04 — Focal Loss (gamma=2) to fix malignant misclassifications
+#
+# Motivation:
+#   tune_01 best run (92.95%) has 7/42 malignant cases predicted as benign.
+#   Focal loss down-weights easy examples and focuses on hard ones, which
+#   should help the model learn the hard malignant/benign boundary.
+#   gamma=2 is the standard value from the original focal loss paper.
+#
+# Changes from tune_01_lr_aug.yaml:
+#   focal_gamma: 0.0 → 2.0   (enables focal loss, disables label smoothing path)
+#   smoothing:   0.1 → 0.0   (focal loss handles this internally)
+#   mixup/cutmix disabled    (focal loss incompatible with soft targets)
+#   checkpoint_dir / results_dir → tuning/tune_04_focal/
+
+model: mobilefcmvitv3_s
+num_classes: 3
+
+pretrained_weights: baseline/Models/MobileViTv3-v1/results_segmentation/mobilevitv3_S_voc_e50_7959/checkpoint_ema_best.pt
+
+# ── Feature-space differentiable soft clustering ──────────────────────────────
+fcm_k: 3
+fcm_proj_dim: 32
+tau: 1.0
+fcm_m: 2.0
+membership: softmax
+normalize_feat: true
+fusion_type: attention
+lambda_clust: 0.01
+lambda_entropy: 0.0
+
+# Architecture
+dropout: 0.1
+attn_dropout: 0.0
+ffn_dropout: 0.0
+drop_path_rate: 0.1
+
+# Training — same as tune_01
+batch_size: 32
+validation_batch_size: 16
+epochs: 200
+lr: 5.0e-4
+warmup_lr: 5.0e-7
+min_lr: 5.0e-7
+warmup_epochs: 10
+weight_decay: 0.01
+opt: adamw
+opt_eps: 1.0e-8
+opt_betas: [0.9, 0.999]
+clip_grad: 5.0
+clip_mode: norm
+
+sched: cosine
+cooldown_epochs: 10
+
+# Augmentation — same as tune_01
+color_jitter: 0.4
+hflip: 0.5
+vflip: 0.3
+scale: [0.08, 1.0]
+ratio: [0.75, 1.3333333333333333]
+mixup: 0.0          # disabled — focal loss needs hard labels
+cutmix: 0.0         # disabled
+mixup_prob: 0.0
+mixup_switch_prob: 0.5
+smoothing: 0.0      # focal loss handles sharpness via gamma
+
+# Loss — focal loss
+focal_gamma: 2.0    # focus on hard examples
+use_class_weights: true
+
+# Regularization
+drop_rate: 0.1
+
+# AMP
+amp: true
+
+# Misc
+workers: 8
+pin_mem: true
+log_wandb: true
+model_ema: true
+model_ema_decay: 0.9998
+patience_epochs: 60
+seed: 42
+eval_metric: top1
+checkpoint_dir: tuning/tune_04_focal/checkpoints
+results_dir: tuning/tune_04_focal/results
