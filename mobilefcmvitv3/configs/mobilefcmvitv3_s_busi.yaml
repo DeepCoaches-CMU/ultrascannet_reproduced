@@ -1,0 +1,79 @@
+# MobileFCMViTv3-S training config for BUSI (3-class breast ultrasound)
+# FCM is applied in feature space — input is standard 3-channel RGB.
+
+model: mobilefcmvitv3_s
+num_classes: 3
+
+# Pretrained MobileViTv3-S weights — VOC segmentation checkpoint (v1).
+# Segmentation pretraining gives richer spatial features than ImageNet
+# classification, which is more relevant for medical image analysis.
+# The encoder. prefix is stripped automatically by load_pretrained.
+pretrained_weights: baseline/Models/MobileViTv3-v1/results_segmentation/mobilevitv3_S_voc_e50_7959/checkpoint_ema_best.pt
+
+# ── Feature-space differentiable soft clustering ─────────────────────────────
+fcm_k: 3              # number of cluster prototypes (K)
+fcm_proj_dim: 32      # project 640-ch features → 32-ch before clustering
+tau: 1.0              # softmax temperature (lower = sharper assignments)
+fcm_m: 2.0            # fuzziness exponent for FCM-style membership
+membership: softmax   # 'softmax' or 'fcm'
+normalize_feat: true  # L2-normalise features before distance computation
+fusion_type: attention # 'attention' or 'concat'
+lambda_clust: 0.1     # weight of compactness loss
+lambda_entropy: 0.01  # weight of entropy regularisation loss
+
+# Architecture
+dropout: 0.1
+attn_dropout: 0.0
+ffn_dropout: 0.0
+drop_path_rate: 0.1
+
+# Training
+batch_size: 32
+validation_batch_size: 16
+epochs: 150
+lr: 6.25e-5
+warmup_lr: 6.25e-8
+min_lr: 6.25e-7
+warmup_epochs: 20
+weight_decay: 0.01
+opt: adamw
+opt_eps: 1.0e-8
+opt_betas: [0.9, 0.999]
+clip_grad: 5.0
+clip_mode: norm
+
+# Scheduler
+sched: cosine
+cooldown_epochs: 10
+
+# Augmentation
+color_jitter: 0.2
+hflip: 0.5
+scale: [0.08, 1.0]
+ratio: [0.75, 1.3333333333333333]
+mixup: 0.2
+cutmix: 0.2
+mixup_prob: 0.3
+mixup_switch_prob: 0.5
+smoothing: 0.1
+
+# Class imbalance
+use_class_weights: true
+
+# Regularization
+drop_rate: 0.1
+
+# AMP
+amp: true
+
+# Misc
+workers: 8
+pin_mem: true
+log_wandb: true
+model_ema: true
+model_ema_decay: 0.9998
+patience_epochs: 40
+seed: 42
+eval_metric: top1
+checkpoint_dir: checkpoints/mobilefcmvitv3_s_BUSI
+results_dir: results/mobilefcmvitv3_s_BUSI

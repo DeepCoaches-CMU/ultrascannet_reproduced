@@ -1,0 +1,94 @@
+# tuning/tune_01_lr_aug.yaml
+#
+# Tuning run 01 — higher LR + stronger augmentation + reduced clustering lambda
+#
+# Motivation:
+#   Baseline run (73.72%) plateaued early. The lr=6.25e-5 was too conservative
+#   for fine-tuning on a small dataset (624 samples). Clustering lambda=0.1
+#   may have competed with the task loss. Stronger augmentation to combat
+#   overfitting on the small BUSI dataset.
+#
+# Changes from mobilefcmvitv3_s_busi.yaml:
+#   lr:            6.25e-5  →  5.0e-4
+#   warmup_epochs: 20       →  10
+#   lambda_clust:  0.1      →  0.01
+#   lambda_entropy:0.01     →  0.0
+#   color_jitter:  0.2      →  0.4
+#   vflip:         (none)   →  0.3
+#   epochs:        150      →  200
+#   patience_epochs:40      →  60
+#   checkpoint_dir / results_dir point to tuning/tune_01_lr_aug/
+
+model: mobilefcmvitv3_s
+num_classes: 3
+
+pretrained_weights: baseline/Models/MobileViTv3-v1/results_segmentation/mobilevitv3_S_voc_e50_7959/checkpoint_ema_best.pt
+
+# ── Feature-space differentiable soft clustering ──────────────────────────────
+fcm_k: 3
+fcm_proj_dim: 32
+tau: 1.0
+fcm_m: 2.0
+membership: softmax
+normalize_feat: true
+fusion_type: attention
+lambda_clust: 0.01      # reduced: was 0.1
+lambda_entropy: 0.0     # disabled: was 0.01
+
+# Architecture
+dropout: 0.1
+attn_dropout: 0.0
+ffn_dropout: 0.0
+drop_path_rate: 0.1
+
+# Training
+batch_size: 32
+validation_batch_size: 16
+epochs: 200
+lr: 5.0e-4              # increased: was 6.25e-5
+warmup_lr: 5.0e-7
+min_lr: 5.0e-7
+warmup_epochs: 10       # reduced: was 20
+weight_decay: 0.01
+opt: adamw
+opt_eps: 1.0e-8
+opt_betas: [0.9, 0.999]
+clip_grad: 5.0
+clip_mode: norm
+
+# Scheduler
+sched: cosine
+cooldown_epochs: 10
+
+# Augmentation — stronger
+color_jitter: 0.4       # increased: was 0.2
+hflip: 0.5
+vflip: 0.3              # added
+scale: [0.08, 1.0]
+ratio: [0.75, 1.3333333333333333]
+mixup: 0.2
+cutmix: 0.2
+mixup_prob: 0.3
+mixup_switch_prob: 0.5
+smoothing: 0.1
+
+# Class imbalance
+use_class_weights: true
+
+# Regularization
+drop_rate: 0.1
+
+# AMP
+amp: true
+
+# Misc
+workers: 8
+pin_mem: true
+log_wandb: true
+model_ema: true
+model_ema_decay: 0.9998
+patience_epochs: 60
+seed: 42
+eval_metric: top1
+checkpoint_dir: tuning/tune_01_lr_aug/checkpoints
+results_dir: tuning/tune_01_lr_aug/results

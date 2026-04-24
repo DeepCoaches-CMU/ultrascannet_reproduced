@@ -12,9 +12,9 @@ weights_dir: weights
 # Canonical best-checkpoint path for the UltraScanNet baseline
 ultrascannet_checkpoint: weights/ultra_scan_net_BUSI/model_best.pth.tar
 
-# Canonical best-checkpoint path for MobileFCMVit2
-mobilefcmvit2_checkpoint: weights/mobilefcmvit2_net_BUSI/model_best.pth.tar
+# Canonical best-checkpoint path for the MambaVisionFCM baseline
+mambavision_fcm_checkpoint: weights/mobilefcmvit2_net_BUSI/model_best.pth.tar
 
 output_dir: weights
 
-wandb_group: mobilefcmvit2_reproduce
+wandb_group: mambavision_fcm_reproduce

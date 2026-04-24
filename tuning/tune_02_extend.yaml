@@ -1,0 +1,91 @@
+# tuning/tune_02_extend.yaml
+#
+# Tuning run 02 — extend tune_01 run 1 (92.95% @ epoch 175)
+#
+# Motivation:
+#   Run 1 of tune_01 was still improving at epoch 199 (hit epoch limit, not
+#   patience). Extend with more epochs and a slightly lower LR to squeeze
+#   out remaining gains. Resume from the best checkpoint.
+#
+# Changes from tune_01_lr_aug.yaml:
+#   pretrained_weights → resume from tune_01 best checkpoint
+#   lr:            5.0e-4  →  1.0e-4  (fine-tune phase)
+#   warmup_epochs: 10      →  5
+#   epochs:        200     →  300
+#   patience_epochs:60     →  80
+#   checkpoint_dir / results_dir → tuning/tune_02_extend/
+
+model: mobilefcmvitv3_s
+num_classes: 3
+
+# Resume from tune_01 run 1 best checkpoint
+pretrained_weights: tuning/tune_01_lr_aug/checkpoints/model_best.pth.tar
+
+# ── Feature-space differentiable soft clustering ──────────────────────────────
+fcm_k: 3
+fcm_proj_dim: 32
+tau: 1.0
+fcm_m: 2.0
+membership: softmax
+normalize_feat: true
+fusion_type: attention
+lambda_clust: 0.01
+lambda_entropy: 0.0
+
+# Architecture
+dropout: 0.1
+attn_dropout: 0.0
+ffn_dropout: 0.0
+drop_path_rate: 0.1
+
+# Training
+batch_size: 32
+validation_batch_size: 16
+epochs: 300
+lr: 1.0e-4              # reduced for fine-tune phase
+warmup_lr: 1.0e-7
+min_lr: 1.0e-7
+warmup_epochs: 5
+weight_decay: 0.01
+opt: adamw
+opt_eps: 1.0e-8
+opt_betas: [0.9, 0.999]
+clip_grad: 5.0
+clip_mode: norm
+
+# Scheduler
+sched: cosine
+cooldown_epochs: 10
+
+# Augmentation — same as tune_01
+color_jitter: 0.4
+hflip: 0.5
+vflip: 0.3
+scale: [0.08, 1.0]
+ratio: [0.75, 1.3333333333333333]
+mixup: 0.2
+cutmix: 0.2
+mixup_prob: 0.3
+mixup_switch_prob: 0.5
+smoothing: 0.1
+
+# Class imbalance
+use_class_weights: true
+
+# Regularization
+drop_rate: 0.1
+
+# AMP
+amp: true
+
+# Misc
+workers: 8
+pin_mem: true
+log_wandb: true
+model_ema: true
+model_ema_decay: 0.9998
+patience_epochs: 80
+seed: 42
+eval_metric: top1
+checkpoint_dir: tuning/tune_02_extend/checkpoints
+results_dir: tuning/tune_02_extend/results
