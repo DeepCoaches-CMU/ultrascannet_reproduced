@@ -6,8 +6,8 @@
 #SBATCH --mem=92G
 #SBATCH --time=8:00:00
 #SBATCH --qos=normal
-#SBATCH --output=/home/jgibson2/projects/UltraScanNet/slurm_logs/%x_%j.out
-#SBATCH --error=/home/jgibson2/projects/UltraScanNet/slurm_logs/%x_%j.err
+#SBATCH --output=/home/jgibson2/projects/mobilefcmvit2/slurm_logs/%x_%j.out
+#SBATCH --error=/home/jgibson2/projects/mobilefcmvit2/slurm_logs/%x_%j.err
 #SBATCH --signal=B:SIGTERM@120
 
 set -euo pipefail
@@ -20,10 +20,10 @@ resolve_project_dir() {
 	if [[ -n "${SLURM_SUBMIT_DIR:-}" ]]; then
 		candidates+=("$SLURM_SUBMIT_DIR" "$SLURM_SUBMIT_DIR/..")
 	fi
-	candidates+=("$PWD" "$PWD/.." "/home/jgibson2/projects/UltraScanNet")
+	candidates+=("$PWD" "$PWD/.." "/home/jgibson2/projects/mobilefcmvit2")
 
 	for candidate in "${candidates[@]}"; do
-		if [[ -f "$candidate/paths.yaml" && -f "$candidate/ultrascannet/launch_experiments.py" ]]; then
+		if [[ -f "$candidate/paths.yaml" && -f "$candidate/mobilefcmvit2/launch_experiments.py" ]]; then
 			cd "$candidate" >/dev/null 2>&1 && pwd
 			return 0
 		fi
@@ -37,7 +37,7 @@ PROJECT_DIR=$(resolve_project_dir) || {
 	exit 1
 }
 
-echo "==== UltraScanNet Launch Experiments ===="
+echo "==== MobileFCMVit2 Launch Experiments ===="
 echo "Job started on $(hostname) at $(date)"
 echo "SLURM_JOB_ID: $SLURM_JOB_ID"
 

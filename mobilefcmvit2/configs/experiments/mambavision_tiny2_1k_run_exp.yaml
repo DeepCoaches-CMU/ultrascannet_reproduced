@@ -1,0 +1,79 @@
+# MobileFCMVit2 training config for BUSI (3-class breast ultrasound)
+# FCM map concatenated as 4th input channel (in_chans=4)
+
+model: mobilefcmvit2_net
+num_classes: 3
+in_chans: 4
+
+# Pretrained MambaVision-T2-1K backbone
+loadcheckpoint: weights/mambavision_t2_1k.pth.tar
+initial_checkpoint: ''
+
+# FCM
+fcm_dir: mobilefcmvit2/fcm
+
+# Architecture
+patch_embed: default
+first_layer: convblock_posenc
+second_layer: hybrid
+mixer: 0
+
+# Training — lower LR to reduce oscillation, longer warmup
+batch_size: 16
+validation_batch_size: 32
+epochs: 300
+lr: 2.5e-4
+warmup_lr: 1.0e-6
+min_lr: 1.0e-6
+warmup_epochs: 30
+weight_decay: 0.05
+opt: adamw
+opt_eps: 1.0e-8
+opt_betas: [0.9, 0.999]
+clip_grad: 5.0
+clip_mode: norm
+
+# Scheduler
+sched: cosine
+lr_ep: false
+decay_epochs: 100
+cooldown_epochs: 10
+
+# Augmentation — reduce mixup/cutmix aggressiveness for small imbalanced dataset
+aa: rand-m7-mstd0.5-inc1
+color_jitter: 0.3
+hflip: 0.5
+vflip: 0.0
+scale: [0.2, 1.0]
+ratio: [0.75, 1.3333333333333333]
+reprob: 0.1
+remode: pixel
+recount: 1
+mixup: 0.2
+cutmix: 0.2
+mixup_prob: 0.3
+mixup_switch_prob: 0.5
+mixup_mode: batch
+smoothing: 0.05
+train_interpolation: random
+
+# Regularization
+drop_rate: 0.1
+drop_path: 0.1
+attn_drop_rate: 0.0
+
+# AMP / precision
+amp: true
+native_amp: true
+
+# Misc
+workers: 8
+pin_mem: true
+log_wandb: true
+model_ema: true
+model_ema_decay: 0.9998
+patience_epochs: 40
+seed: 42
+log_interval: 50
+checkpoint_hist: 1
+eval_metric: top1

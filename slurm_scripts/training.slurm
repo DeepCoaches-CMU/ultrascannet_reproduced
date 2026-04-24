@@ -6,8 +6,8 @@
 #SBATCH --mem=92G
 #SBATCH --time=4:00:00
 #SBATCH --qos=normal
-#SBATCH --output=/home/jgibson2/projects/UltraScanNet/slurm_logs/%x_%j.out
-#SBATCH --error=/home/jgibson2/projects/UltraScanNet/slurm_logs/%x_%j.err
+#SBATCH --output=/home/jgibson2/projects/ultrascannet_reproduced/slurm_logs/%x_%j.out
+#SBATCH --error=/home/jgibson2/projects/ultrascannet_reproduced/slurm_logs/%x_%j.err
 #SBATCH --signal=B:SIGTERM@120
 
 set -euo pipefail
@@ -20,10 +20,10 @@ resolve_project_dir() {
 	if [[ -n "${SLURM_SUBMIT_DIR:-}" ]]; then
 		candidates+=("$SLURM_SUBMIT_DIR" "$SLURM_SUBMIT_DIR/..")
 	fi
-	candidates+=("$PWD" "$PWD/.." "/home/jgibson2/projects/UltraScanNet")
+	candidates+=("$PWD" "$PWD/.." "/home/jgibson2/projects/ultrascannet_reproduced")
 
 	for candidate in "${candidates[@]}"; do
-		if [[ -f "$candidate/paths.yaml" && -f "$candidate/ultrascannet/train.py" ]]; then
+		if [[ -f "$candidate/paths.yaml" && -f "$candidate/mobilefcmvit2/train.py" ]]; then
 			cd "$candidate" >/dev/null 2>&1 && pwd
 			return 0
 		fi
@@ -58,7 +58,7 @@ PY
 }
 
 
-echo "==== UltraScanNet Training ===="
+echo "==== MobileFCMVit2 Training ===="
 
 echo "Job started on $(hostname) at $(date)"
 echo "SLURM_JOB_ID: $SLURM_JOB_ID"
@@ -66,13 +66,7 @@ echo "SLURM_JOB_ID: $SLURM_JOB_ID"
 
 # ---- Load environment ----
 cd "$PROJECT_DIR"
-if [[ -f "$PROJECT_DIR/venv/bin/activate" ]]; then
-	source "$PROJECT_DIR/venv/bin/activate"
-else
-	echo "Virtual environment not found at $PROJECT_DIR/venv/bin/activate" >&2
-	echo "Set PROJECT_DIR correctly or create the venv before submitting." >&2
-	exit 1
-fi
+source /home/jgibson2/projects/ultrascannet_reproduced/venv/bin/activate
 
 
 SLURM_LOG_DIR=$PROJECT_DIR/slurm_logs
@@ -95,10 +89,40 @@ print(data["wandb_group"])
 PY
 )
 
-CONFIG_PATH=${1:-$PROJECT_DIR/ultrascannet/configs/experiments/mambavision_tiny2_1k_run_exp.yaml}
-MODEL_NAME=${2:-ultra_scan_net}
+CONFIG_PATH=${1:-$PROJECT_DIR/mobilefcmvit2/configs/experiments/mambavision_tiny2_1k_run_exp.yaml}
+MODEL_NAME=${2:-mobilefcmvit2_net}
 EXPERIMENT_NAME=${3:-${MODEL_NAME}_BUSI}
 DATA_LEN=${4:-624}
+
+# ---- Download pretrained MambaVision-T2-1K weights if not present ----
+MAMBA_CKPT=$PROJECT_DIR/weights/mambavision_t2_1k.pth.tar
+if [ ! -f "$MAMBA_CKPT" ]; then
+	echo "Downloading MambaVision-T2-1K pretrained weights ..."
+	mkdir -p "$PROJECT_DIR/weights"
+	PYTHONPATH=$PROJECT_DIR python3 - <<'PY'
+import torch, pathlib
+url = "https://huggingface.co/nvidia/MambaVision-T2-1K/resolve/main/mambavision_tiny2_1k.pth.tar"
+dst = pathlib.Path("weights/mambavision_t2_1k.pth.tar")
+dst.parent.mkdir(parents=True, exist_ok=True)
+if not dst.exists():
+    torch.hub.download_url_to_file(url, str(dst))
+    print(f"Downloaded to {dst}")
+else:
+    print(f"Already exists: {dst}")
+PY
+else
+	echo "Pretrained weights already present: $MAMBA_CKPT"
+fi
+FCM_DIR=$PROJECT_DIR/mobilefcmvit2/fcm
+FCM_COUNT=$(find "$FCM_DIR" -name '*.png' 2>/dev/null | wc -l)
+if [ "$FCM_COUNT" -lt 10 ]; then
+	echo "Precomputing FCM maps (found $FCM_COUNT, expected ~780) ..."
+	PYTHONPATH=$PROJECT_DIR python3 mobilefcmvit2/precompute_fcm.py \
+		--data_dir="$BUSI_DIR" \
+		--out_dir="$FCM_DIR"
+else
+	echo "FCM maps already present ($FCM_COUNT files), skipping precomputation."
+fi
 
 mkdir -p "$OUTPUT_DIR"
 
@@ -148,13 +172,15 @@ PYTHONPATH=$PROJECT_DIR torchrun \
 	--standalone \
 	--nnodes=1 \
 	--nproc_per_node=${SLURM_GPUS_ON_NODE:-1} \
-	ultrascannet/train.py \
+	mobilefcmvit2/train.py \
 	-c "$CONFIG_PATH" \
 	--group="$WANDB_GROUP" \
 	--model="$MODEL_NAME" \
 	--experiment="$EXPERIMENT_NAME" \
 	--data_dir="$BUSI_DIR" \
 	--data_len="$DATA_LEN" \
-	--output="$OUTPUT_DIR"
+	--output="$OUTPUT_DIR" \
+	--fcm_dir="$FCM_DIR" \
+	--log-wandb
 
 echo "Job finished at $(date)"

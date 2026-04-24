@@ -1,25 +1,20 @@
 # ============================================================
-# paths.yaml — local path configuration for UltraScanNet
+# paths.yaml — local path configuration
 # Edit these paths to match your environment before running.
 # ============================================================
 
-# Root directory where datasets are stored.
-# Relative paths are resolved from the repository root.
 datasets_root: datasets
 
-# BUSI dataset (organized by the setup script)
 busi_split_dir: datasets/BUSI_split
 
-# Pretrained weights directory
 weights_dir: weights
 
-# Canonical best-checkpoint path for the default UltraScanNet BUSI experiment.
+# Canonical best-checkpoint path for the UltraScanNet baseline
 ultrascannet_checkpoint: weights/ultra_scan_net_BUSI/model_best.pth.tar
 
-# Training output root. train.py writes each experiment to:
-#   <output_dir>/<experiment_name>/
-# Set this to the same location used for validation lookups.
+# Canonical best-checkpoint path for MobileFCMVit2
+mobilefcmvit2_checkpoint: weights/mobilefcmvit2_net_BUSI/model_best.pth.tar
+
 output_dir: weights
 
-# WandB project group
-wandb_group: ultrascannet_reproduce
+wandb_group: mobilefcmvit2_reproduce
