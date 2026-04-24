@@ -5,6 +5,7 @@ Trains MobileFCMVit2 on BUSI. All paths are read from paths.yaml at the repo roo
 """
 
 import subprocess
+import sys
 from pathlib import Path
 
 import yaml
@@ -59,7 +60,7 @@ def main():
         for ds in datasets:
             experiment_name = f"{model}_{ds['name']}"
             cmd = [
-                "python3", "train.py",
+                sys.executable, "train.py",
                 "-c", "./configs/experiments/mambavision_tiny2_1k_run_exp.yaml",
                 f"--group={wandb_group}",
                 f"--model={model}",
