@@ -51,3 +51,6 @@ events.out.tfevents.*
 # OS/editor noise
 .DS_Store
 .vscode/
+Models.zip
+Models/
+MobileViTv3/

@@ -128,7 +128,7 @@ def compute_extended_metrics(all_targets, all_preds, all_probs,
     sens_at_spec = {}
     for c, name in enumerate(class_names):
         y_bin = (all_targets == c).astype(np.uint8)
-        sens, spec, thr = sensitivity_at_fixed_specificity(all_probs[:, c], y_bin)
+        sens, spec, thr = sensitivity_at_fixed_specificity(y_bin, all_probs[:, c])
         sens_at_spec[name] = {
             'sensitivity@90%spec': round(sens, 4),
             'achieved_spec':       round(spec, 4),
