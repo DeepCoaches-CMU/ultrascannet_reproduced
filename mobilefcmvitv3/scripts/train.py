@@ -165,6 +165,7 @@ def validate(model, loader, loss_fn, amp_autocast, log_suffix=''):
         all_targets.append(targets.cpu())
         all_probs.append(torch.softmax(logits.float(), 1).cpu())
 
+    model.train()   # restore training mode after validation
     return {
         'loss': losses.avg, 'top1': top1.avg,
         '_preds':   torch.cat(all_preds).numpy(),
@@ -217,14 +218,20 @@ def main():
 
     model = model.cuda()
 
+    # Efficiency — run on a temporary copy so thop doesn't register
+    # total_ops/total_params buffers on the training model's state_dict,
+    # which would corrupt the EMA model created afterwards.
+    import copy
+    _tmp = copy.deepcopy(model)
+    params_M, flops_G, inf_ms = compute_efficiency(_tmp, in_chans=3)
+    del _tmp
+    _logger.info(f"Params: {params_M}M | FLOPs: {flops_G}G | Inference: {inf_ms}ms")
+
     # EMA
     model_ema = None
     if cfg.get('model_ema', True):
-        model_ema = ModelEmaV2(model, decay=cfg.get('model_ema_decay', 0.9998))
-
-    # Efficiency
-    params_M, flops_G, inf_ms = compute_efficiency(model, in_chans=3)
-    _logger.info(f"Params: {params_M}M | FLOPs: {flops_G}G | Inference: {inf_ms}ms")
+        model_ema = ModelEmaV2(model, decay=cfg.get('model_ema_decay', 0.9998),
+                               device='cuda')
 
     # Data — plain RGB, no FCM channel at input
     img_size = 224
@@ -304,7 +311,7 @@ def main():
     scaler = None
     if cfg.get('amp', True):
         amp_autocast = partial(torch.amp.autocast, 'cuda')
-        scaler = torch.cuda.amp.GradScaler()
+        scaler = torch.amp.GradScaler('cuda')
         _logger.info("Using native AMP.")
 
     # Training loop

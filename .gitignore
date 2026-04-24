@@ -1,6 +1,10 @@
 # ── SLURM scripts (internal tooling, not tracked) ───────────────────────────
 slurm_scripts/
 
+# ── Tuning run outputs (configs tracked, outputs not) ──────────────────────
+tuning/*/checkpoints/
+tuning/*/results/
+
 # ── Python ────────────────────────────────────────────────────────────────────
 __pycache__/
 *.py[cod]
